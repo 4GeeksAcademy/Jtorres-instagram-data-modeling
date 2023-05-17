@@ -12,21 +12,69 @@ class Person(Base):
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    username = Column(String(250), nullable=False)
+    first_name = Column(String(250), nullable=False)
+    last_name = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False)
 
-class Address(Base):
-    __tablename__ = 'address'
+class Comment(Base):
+    __tablename__ = 'comment'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
-    id = Column(Integer, primary_key=True)
+    comment_id = Column(Integer, primary_key=True)
     street_name = Column(String(250))
     street_number = Column(String(250))
     post_code = Column(String(250), nullable=False)
+
     person_id = Column(Integer, ForeignKey('person.id'))
     person = relationship(Person)
 
     def to_dict(self):
         return {}
+    
+class Follower(Base):
+    __tablename__="follower"
+
+    user_from_id =Column(Integer, primary_key=True)
+    user_to_id=Column(Integer, nullable=False)
+
+    person_id = Column(Integer, ForeignKey('person.id'))
+    person = relationship(Person)
+
+class Post(Base):
+    __tablename__="post"
+
+    post_id=Column(Integer, primary_key=True)
+
+    comment_id = Column(Integer, ForeignKey("comment.comment_id"))
+
+    person_id = Column(Integer, ForeignKey('person.id'))
+    person = relationship(Person)
+
+class Media(Base):
+    __tablename__="media"
+
+    media_id=Column(Integer, primary_key=True)
+    type=Column(Integer)
+    url=Column(String(250), nullable=False)
+
+    post_id= Column(Integer, ForeignKey('post.post_id'))
+    post = relationship(Post)
+
+class ProfilePicture(Base):
+    __tablename__="profile_picture"
+
+    id=Column(Integer, primary_key=True)
+
+    person_id=Column(Integer, ForeignKey("person.id"))
+    person = relationship(Person)
+
+    media_id=Column(Integer, ForeignKey("media.media_id"))
+    media=relationship(Media)
+    
+
+
+    
 
 ## Draw from SQLAlchemy base
 try:
